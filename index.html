@@ -50,26 +50,65 @@
             position: absolute;
             color: var(--pink);
             opacity: 0;
-            animation: floatUp linear infinite;
+            animation: bungeeDrop ease-in-out infinite;
             font-size: 1.5rem;
+            top: -30px;
         }
 
-        @keyframes floatUp {
+        @keyframes bungeeDrop {
             0% {
-                transform: translateY(100vh) rotate(0deg) scale(0.5);
+                transform: translateY(0) rotate(0deg) scale(0.8);
                 opacity: 0;
             }
 
-            10% {
+            5% {
+                opacity: 0.7;
+            }
+
+            /* Free fall down */
+            30% {
+                transform: translateY(85vh) rotate(180deg) scale(1.2);
+                opacity: 0.8;
+            }
+
+            /* Snap back up (bungee cord!) */
+            45% {
+                transform: translateY(30vh) rotate(220deg) scale(0.9);
+                opacity: 0.7;
+            }
+
+            /* Drop again, smaller */
+            55% {
+                transform: translateY(65vh) rotate(260deg) scale(1.1);
                 opacity: 0.6;
             }
 
-            90% {
+            /* Bounce back */
+            65% {
+                transform: translateY(40vh) rotate(300deg) scale(0.95);
+                opacity: 0.5;
+            }
+
+            /* Swing left */
+            75% {
+                transform: translateY(55vh) translateX(-40px) rotate(340deg) scale(1);
+                opacity: 0.4;
+            }
+
+            /* Swing right */
+            85% {
+                transform: translateY(50vh) translateX(40px) rotate(360deg) scale(1);
                 opacity: 0.3;
             }
 
+            /* Settle center */
+            95% {
+                transform: translateY(52vh) translateX(0) rotate(370deg) scale(1);
+                opacity: 0.1;
+            }
+
             100% {
-                transform: translateY(-10vh) rotate(360deg) scale(1.2);
+                transform: translateY(52vh) rotate(380deg) scale(1);
                 opacity: 0;
             }
         }
@@ -360,25 +399,104 @@
             transition: all 0.15s ease;
         }
 
-        /* Emoji rain on celebration */
+        /* Emoji rain on celebration — bungee style! */
         .emoji-rain {
             position: fixed;
             top: -50px;
             font-size: 2rem;
-            animation: emojiDrop linear forwards;
             z-index: 100;
             pointer-events: none;
         }
 
-        @keyframes emojiDrop {
+        .emoji-rain.bungee {
+            animation: emojiBungee ease-in-out forwards;
+        }
+
+        .emoji-rain.swing {
+            animation: emojiSwing ease-in-out forwards;
+        }
+
+        @keyframes emojiBungee {
             0% {
                 transform: translateY(0) rotate(0deg);
                 opacity: 1;
             }
 
+            /* Fast fall */
+            35% {
+                transform: translateY(90vh) rotate(200deg);
+                opacity: 1;
+            }
+
+            /* Snap back up */
+            50% {
+                transform: translateY(35vh) rotate(280deg);
+                opacity: 0.9;
+            }
+
+            /* Drop again */
+            65% {
+                transform: translateY(70vh) rotate(400deg);
+                opacity: 0.8;
+            }
+
+            /* Small bounce */
+            75% {
+                transform: translateY(50vh) rotate(500deg);
+                opacity: 0.6;
+            }
+
+            /* Swing and settle */
+            85% {
+                transform: translateY(60vh) translateX(-30px) rotate(600deg);
+                opacity: 0.4;
+            }
+
+            95% {
+                transform: translateY(55vh) translateX(20px) rotate(680deg);
+                opacity: 0.2;
+            }
+
             100% {
-                transform: translateY(110vh) rotate(720deg);
+                transform: translateY(58vh) translateX(0) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes emojiSwing {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+
+            30% {
+                transform: translateY(75vh) rotate(180deg);
+                opacity: 1;
+            }
+
+            45% {
+                transform: translateY(40vh) translateX(50px) rotate(240deg);
+                opacity: 0.9;
+            }
+
+            60% {
+                transform: translateY(60vh) translateX(-50px) rotate(360deg);
+                opacity: 0.7;
+            }
+
+            75% {
+                transform: translateY(50vh) translateX(30px) rotate(480deg);
                 opacity: 0.5;
+            }
+
+            90% {
+                transform: translateY(55vh) translateX(-15px) rotate(600deg);
+                opacity: 0.3;
+            }
+
+            100% {
+                transform: translateY(53vh) translateX(0) rotate(720deg);
+                opacity: 0;
             }
         }
 
@@ -799,20 +917,22 @@
             }, 800);
         }
 
-        // ======== Emoji Rain ========
+        // ======== Emoji Rain (Bungee Style!) ========
         function launchEmojiRain() {
-            const celebrationEmojis = ['💕', '💖', '🥰', '💝', '🌹', '✨', '🎉', '💘', '💗', '💓', '🦋', '🎀'];
+            const celebrationEmojis = ['💕', '💖', '🥰', '💝', '🌹', '✨', '🎉', '💘', '💗', '💓', '🦋', '🎀', '🪂'];
+            const animStyles = ['bungee', 'swing'];
             for (let i = 0; i < 25; i++) {
                 setTimeout(() => {
                     const emoji = document.createElement('div');
-                    emoji.className = 'emoji-rain';
+                    const style = animStyles[Math.floor(Math.random() * animStyles.length)];
+                    emoji.className = `emoji-rain ${style}`;
                     emoji.textContent = celebrationEmojis[Math.floor(Math.random() * celebrationEmojis.length)];
                     emoji.style.left = Math.random() * 100 + '%';
                     emoji.style.fontSize = (Math.random() * 2 + 1.5) + 'rem';
-                    emoji.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                    emoji.style.animationDuration = (Math.random() * 2 + 3) + 's';
                     document.body.appendChild(emoji);
-                    setTimeout(() => emoji.remove(), 5000);
-                }, i * 100);
+                    setTimeout(() => emoji.remove(), 7000);
+                }, i * 120);
             }
         }
 
